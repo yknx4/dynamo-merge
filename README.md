@@ -6,7 +6,7 @@
 ## Installation
 
 ~~~shell
-yarn add dynamo-merge
+yarn add dynamo-merge # or npm install dynamo-merge --save
 ~~~
 
 ## Usage
@@ -20,3 +20,16 @@ const result = await documentClient.update({
     ...merge(updatedUserAttributes),
 })
 ~~~
+
+## Tests
+
+To run tests with `tape`, run 
+
+```
+yarn test # or npm test
+
+```
+
+## License
+
+MIT
