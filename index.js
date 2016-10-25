@@ -1,4 +1,23 @@
 /**
+ * Gets the next prefix
+ * @param {String} prefix - Previous prefix
+ * @param {Any} val - Value of the array
+ * @param {Boolean} isFromArray - true if the value became originally from an array
+ * @returns {String} - Next prefix
+ */
+const getNextPrefix = (prefix, val, isFromArray) => {
+  if (isFromArray) {
+    return prefix
+  }
+
+  if (!isFromArray && prefix === "") {
+    return val
+  }
+
+  return `${prefix}.${val}`
+}
+
+/**
  * @param {string} prefix - Current prefix
  * @param {object|array} updates - Current set of updates
  * @param {{sets, adds}} accumulator - Object containing set of adds and sets
@@ -14,25 +33,13 @@ const merge = (prefix, updates, accumulator, type) => {
     return newAcc
   } else if (typeOfUpdates === "function") {
     newAcc = Object.assign({}, merge(prefix, updates(), newAcc, type))
-  } else if (Array.isArray(updates)) {
-    updates.forEach((value) => {
-      if (typeof value === "object") {
-        newAcc = Object.assign({}, merge(prefix, value, newAcc, Array.isArray(value) ? "adds" : "sets"))
-      } else {
-        merge(prefix, value, newAcc, type)
-      }
-    })
   } else if (typeOfUpdates === "object") {
-    Object.keys(updates).forEach((key) => {
-      const value = updates[key]
-      const typeOfValue = typeof value
-      const nextPrefix = `${prefix !== "" ? `${prefix}.` : ""}${key}`
+    const isFromArray = Array.isArray(updates)
+    const arr = isFromArray ? updates : Object.keys(updates)
 
-      if (typeOfValue === "object") {
-        newAcc = merge(`${nextPrefix}`, value, newAcc, Array.isArray(value) ? "adds" : "sets")
-      } else {
-        newAcc = merge(nextPrefix, value, newAcc, type)
-      }
+    arr.forEach((val) => {
+      const value = isFromArray ? val : updates[val]
+      newAcc = merge(getNextPrefix(prefix, val, isFromArray), value, newAcc, Array.isArray(value) ? "adds" : type)
     })
   } else if (typeOfUpdates !== "number") {
     newAcc[type].push(`${prefix}${separator}"${updates}"`)
