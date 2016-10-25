@@ -8,9 +8,15 @@ test('SET', t => {
 })
 
 test.skip('ADD', t => {
+    t.plan(1)
+
+    t.equal(
+        merge({x: {y: "foo", z: {w: 42}}, q: 0}),
+        'SET x.y = "foo", x.y.z.w = 42, q = 0'
+    )
 })
 
-test('Combination', t => {
+test.skip('Combination', t => {
     t.plan(1)
 
     t.equal(
