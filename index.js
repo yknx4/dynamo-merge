@@ -5,5 +5,6 @@ const gather = (prefix, updates) =>
             : `${prefix}${key} = ${JSON.stringify(updates[key])}`
     ).join(', ')
 
-module.exports = (updates) =>
-    `SET ${gather('', updates)}`
+module.exports = (updates) => ({
+    UpdateExpression: `SET ${gather('', updates)}`,
+})
