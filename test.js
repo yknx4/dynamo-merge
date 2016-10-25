@@ -2,17 +2,12 @@ const test = require('tape')
 const merge = require('./index')
 
 test('SET', t => {
-    t.plan(1)
+    t.plan(2)
 
     t.equal(merge({x: 42}), 'SET x = 42')
-})
-
-test.skip('ADD', t => {
-    t.plan(1)
-
     t.equal(
         merge({x: {y: "foo", z: {w: 42}}, q: 0}),
-        'SET x.y = "foo", x.y.z.w = 42, q = 0'
+        'SET x.y = "foo", x.z.w = 42, q = 0'
     )
 })
 
