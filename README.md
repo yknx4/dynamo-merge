@@ -9,7 +9,7 @@ yarn add dynamo-merge
 ## Usage
 
 ~~~js
-import merge from "dynamo-merge";
+import merge from "dynamo-merge"
 
 const result = await documentClient.update({
     TableName: "users",
