@@ -6,4 +6,4 @@ const gather = (prefix, updates) =>
     ).join(', ')
 
 module.exports = (updates) =>
-    'SET ' + gather('', updates)
+    `SET ${gather('', updates)}`
