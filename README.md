@@ -1,5 +1,7 @@
 # dynamo-merge
 
+[![Build Status](https://travis-ci.org/wolverian/dynamo-merge.svg?branch=master)](https://travis-ci.org/wolverian/dynamo-merge)
+
 ## Installation
 
 ~~~shell
