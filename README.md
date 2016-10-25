@@ -1,6 +1,7 @@
 # dynamo-merge
 
 [![Build Status](https://travis-ci.org/wolverian/dynamo-merge.svg?branch=master)](https://travis-ci.org/wolverian/dynamo-merge)
+[![NPM Version](https://img.shields.io/npm/v/dynamo-merge.svg)](https://www.npmjs.com/package/dynamo-merge)
 
 ## Installation
 
