@@ -5,13 +5,13 @@
 
 ## Installation
 
-~~~shell
+```shell
 yarn add dynamo-merge # or npm install dynamo-merge --save
-~~~
+```
 
 ## Usage
 
-~~~js
+``` js
 import merge from "dynamo-merge"
 
 const result = await documentClient.update({
@@ -19,15 +19,14 @@ const result = await documentClient.update({
     Key: {email},
     ...merge(updatedUserAttributes),
 })
-~~~
+```
 
 ## Tests
 
-To run tests with `tape`, run 
+To run tests, use 
 
-```
+``` shell
 yarn test # or npm test
-
 ```
 
 ## License

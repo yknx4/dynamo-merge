@@ -1,6 +1,6 @@
 {
   "name": "dynamo-merge",
-  "version": "1.0.0",
+  "version": "0.0.4",
   "description": "Painlessly update nested DynamoDB objects.",
   "main": "index.js",
   "license": "MIT",

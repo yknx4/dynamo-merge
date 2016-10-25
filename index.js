@@ -10,7 +10,9 @@ const merge = (prefix, updates, accumulator, type) => {
   const separator = type === "sets" ? " = " : " "
   let newAcc = Object.assign({}, accumulator)
 
-  if (typeOfUpdates === "function") {
+  if (updates === null || typeOfUpdates === "undefined") {
+    return newAcc
+  } else if (typeOfUpdates === "function") {
     newAcc = Object.assign({}, merge(prefix, updates(), newAcc, type))
   } else if (Array.isArray(updates)) {
     updates.forEach((value) => {
@@ -44,7 +46,7 @@ module.exports = (updates) => {
   const { sets, adds } = merge("", updates, { sets: [], adds: [] }, "sets")
 
   const addsString = adds.length ? `ADD ${adds.join(", ")}` : ""
-  const setsString = sets.length ? `SET ${sets.join(", ")} ` : ""
+  const setsString = sets.length ? `SET ${sets.join(", ")}` : ""
 
-  return { UpdateExpression: `${setsString}${addsString}`.trim() }
+  return { UpdateExpression: `${setsString} ${addsString}`.trim() }
 }
