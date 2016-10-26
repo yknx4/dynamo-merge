@@ -53,6 +53,6 @@ test("Booleans", (t) => {
 
   t.deepEqual(
     merge({ x: false }),
-    { UpdateExpression: "SET x = \"false\"" }
+    { UpdateExpression: "SET x = false" }
   )
 })

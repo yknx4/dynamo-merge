@@ -47,7 +47,7 @@ const merge = (prefix, updates, accumulator, type) => {
     }, newAcc)
   }
 
-  if (typeOfUpdates !== "number") {
+  if (typeOfUpdates !== "number" && typeOfUpdates !== "boolean") {
     newAcc[type].push(`${prefix}${separator}"${updates}"`)
     return newAcc
   }
