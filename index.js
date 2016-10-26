@@ -29,7 +29,19 @@ const merge = (prefix, updates, accumulator, type) => {
   const separator = type === "sets" ? " = " : " "
   const newAcc = Object.assign({}, accumulator)
 
-  if (updates === null || typeOfUpdates === "undefined") {
+  if (typeOfUpdates === "undefined") {
+    return newAcc
+  }
+
+  if (updates === null) {
+    if (type === "sets" && prefix !== "" && !prefix.includes(".")) {
+      newAcc.deletes.push(prefix)
+    }
+
+    if (type === "adds") {
+      newAcc.removes.push(`${updates}`)
+    }
+
     return newAcc
   }
 
@@ -57,10 +69,17 @@ const merge = (prefix, updates, accumulator, type) => {
 }
 
 module.exports = (updates) => {
-  const { sets, adds } = merge("", updates, { sets: [], adds: [] }, "sets")
+  const {
+    sets,
+    adds,
+    removes,
+    deletes,
+  } = merge("", updates, { sets: [], adds: [], removes: [], deletes: [] }, "sets")
 
-  const addsString = adds.length ? `ADD ${adds.join(", ")}` : ""
-  const setsString = sets.length ? `SET ${sets.join(", ")}` : ""
+  const setsString = sets.length ? `SET ${sets.join(", ")} ` : ""
+  const addsString = adds.length ? `ADD ${adds.join(", ")} ` : ""
+  const deletesString = deletes.length ? `DELETE ${deletes.join(", ")} ` : ""
+  const removesString = removes.length ? `REMOVE ${removes.join(", ")} ` : ""
 
-  return { UpdateExpression: `${setsString} ${addsString}`.trim() }
+  return { UpdateExpression: `${setsString}${addsString}${deletesString}${removesString}`.trim() }
 }

@@ -34,11 +34,31 @@ test("Functions", (t) => {
   )
 })
 
-test("Null and undefined values", (t) => {
-  t.plan(2)
+test("Null values should be deleted", (t) => {
+  t.plan(3)
 
   t.deepEqual(
     merge({ x: null }),
+    { UpdateExpression: "DELETE x" }
+  )
+
+  t.deepEqual(
+    merge({ x: null, y: "foo" }),
+    { UpdateExpression: "SET y = \"foo\" DELETE x" }
+  )
+
+
+  t.deepEqual(
+    merge({ x: { y: null, z: { w: 42 } }, q: 0 }),
+    { UpdateExpression: "SET x.z.w = 42, q = 0" }
+  )
+})
+
+test("Undefineds should be left alone", (t) => {
+  t.plan(2)
+
+  t.deepEqual(
+    merge({ x: undefined }),
     { UpdateExpression: "" }
   )
 
