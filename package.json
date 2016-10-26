@@ -17,9 +17,7 @@
     "test": "node test.js"
   },
   "devDependencies": {
-    "eslint-config-motley": "^4.0.0"
-  },
-  "dependencies": {
+    "eslint-config-motley": "^4.0.0",
     "tape": "^4.6.2"
   }
 }
