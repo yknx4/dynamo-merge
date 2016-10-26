@@ -27,25 +27,32 @@ const getNextPrefix = (prefix, val, isFromArray) => {
 const merge = (prefix, updates, accumulator, type) => {
   const typeOfUpdates = typeof updates
   const separator = type === "sets" ? " = " : " "
-  let newAcc = Object.assign({}, accumulator)
+  const newAcc = Object.assign({}, accumulator)
 
   if (updates === null || typeOfUpdates === "undefined") {
     return newAcc
-  } else if (typeOfUpdates === "function") {
-    newAcc = Object.assign({}, merge(prefix, updates(), newAcc, type))
-  } else if (typeOfUpdates === "object") {
+  }
+
+  if (typeOfUpdates === "function") {
+    return merge(prefix, updates(), newAcc, type)
+  }
+
+  if (typeOfUpdates === "object") {
     const isFromArray = Array.isArray(updates)
     const arr = isFromArray ? updates : Object.keys(updates)
 
-    arr.forEach((val) => {
-      const value = isFromArray ? val : updates[val]
-      newAcc = merge(getNextPrefix(prefix, val, isFromArray), value, newAcc, Array.isArray(value) ? "adds" : type)
-    })
-  } else if (typeOfUpdates !== "number") {
-    newAcc[type].push(`${prefix}${separator}"${updates}"`)
-  } else {
-    newAcc[type].push(`${prefix}${separator}${updates}`)
+    return arr.reduce((prev, current) => {
+      const value = isFromArray ? current : updates[current]
+      return merge(getNextPrefix(prefix, current, isFromArray), value, newAcc, Array.isArray(value) ? "adds" : type)
+    }, newAcc)
   }
+
+  if (typeOfUpdates !== "number") {
+    newAcc[type].push(`${prefix}${separator}"${updates}"`)
+    return newAcc
+  }
+
+  newAcc[type].push(`${prefix}${separator}${updates}`)
   return newAcc
 }
 
