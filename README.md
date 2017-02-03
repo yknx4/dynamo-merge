@@ -21,9 +21,11 @@ const result = await documentClient.update({
 })
 ```
 
+Look at `test.js` for example use cases and the expected output.
+
 ## Tests
 
-To run tests, use 
+To run tests, use
 
 ``` shell
 yarn test # or npm test

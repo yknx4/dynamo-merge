@@ -22,9 +22,10 @@ const getNextPrefix = (prefix, val, isFromArray) => {
  * @param {object|array} updates - Current set of updates
  * @param {{sets, adds}} accumulator - Object containing set of adds and sets
  * @param {string} type - type of item to add to
+ * @param {integer|string} type - the index of the item if it came from an array, otherwise ""
  * @returns {{sets, adds}} - Object containing set of adds and sets
  */
-const merge = (prefix, updates, accumulator, type) => {
+const merge = (prefix, updates, accumulator, type, itemIndex = "") => {
   const typeOfUpdates = typeof updates
   const separator = type === "sets" ? " = " : " "
   const newAcc = Object.assign({}, accumulator)
@@ -34,7 +35,7 @@ const merge = (prefix, updates, accumulator, type) => {
   }
 
   if (updates === null) {
-    if (type === "sets" && prefix !== "" && !prefix.includes(".")) {
+    if (type === "sets") {
       newAcc.deletes.push(prefix)
     }
 
@@ -53,18 +54,21 @@ const merge = (prefix, updates, accumulator, type) => {
     const isFromArray = Array.isArray(updates)
     const arr = isFromArray ? updates : Object.keys(updates)
 
-    return arr.reduce((prev, current) => {
+    return arr.reduce((prev, current, currentIndex) => {
       const value = isFromArray ? current : updates[current]
-      return merge(getNextPrefix(prefix, current, isFromArray), value, newAcc, Array.isArray(value) ? "adds" : type)
+      const index = isFromArray ? currentIndex : ""
+      return merge(getNextPrefix(prefix, current, isFromArray), value, newAcc, Array.isArray(value) ? "adds" : type, index)
     }, newAcc)
   }
 
+  const key = `:${prefix}${itemIndex}`.replace(/\./g, "_")
+  newAcc.params[key] = updates
   if (typeOfUpdates !== "number" && typeOfUpdates !== "boolean") {
-    newAcc[type].push(`${prefix}${separator}"${updates}"`)
+    newAcc[type].push(`${prefix}${separator}${key}`)
     return newAcc
   }
 
-  newAcc[type].push(`${prefix}${separator}${updates}`)
+  newAcc[type].push(`${prefix}${separator}${key}`)
   return newAcc
 }
 
@@ -74,12 +78,16 @@ module.exports = (updates) => {
     adds,
     removes,
     deletes,
-  } = merge("", updates, { sets: [], adds: [], removes: [], deletes: [] }, "sets")
+    params
+  } = merge("", updates, { sets: [], adds: [], removes: [], deletes: [], params: {} }, "sets")
 
   const setsString = sets.length ? `SET ${sets.join(", ")} ` : ""
   const addsString = adds.length ? `ADD ${adds.join(", ")} ` : ""
   const deletesString = deletes.length ? `DELETE ${deletes.join(", ")} ` : ""
   const removesString = removes.length ? `REMOVE ${removes.join(", ")} ` : ""
 
-  return { UpdateExpression: `${setsString}${addsString}${deletesString}${removesString}`.trim() }
+  return {
+    UpdateExpression: `${setsString}${addsString}${deletesString}${removesString}`.trim(),
+    ExpressionAttributeValues: params,
+  }
 }
